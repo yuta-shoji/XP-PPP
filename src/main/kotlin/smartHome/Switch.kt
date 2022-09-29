@@ -1,0 +1,5 @@
+package smartHome
+
+interface Switch {
+
+}
