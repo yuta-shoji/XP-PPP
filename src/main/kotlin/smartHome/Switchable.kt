@@ -1,5 +1,0 @@
-package smartHome
-
-interface Switchable {
-
-}
