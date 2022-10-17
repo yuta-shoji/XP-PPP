@@ -1,8 +1,9 @@
 package smartHome
 
-class AlwaysOffSwitch: Switch {
+class ToggleSwitch(): Switch {
     override var switchStatus: Boolean = false
     override fun isOn(): Boolean {
-        return false
+        switchStatus = !switchStatus
+        return switchStatus
     }
 }

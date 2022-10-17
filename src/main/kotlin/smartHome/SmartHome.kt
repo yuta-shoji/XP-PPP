@@ -1,16 +1,20 @@
 package smartHome
 
 class SmartHome(
-    private val switchable: Switchable,
+    private val bulb: Bulb,
     private val switch: Switch,
-    private val warningService: DefaultWarningService
+    private val warningService: DefaultWarningService,
+    private val smartPhone: SendNotificationRepository,
 ) {
     fun run() {
-        if (switch.isOn()){
+        if (switch.isOn()) {
             warningService.inclementTurnOnCount()
-            switchable.turnOn()
+            if (warningService.isWarning()) {
+                smartPhone.sendNotification(SendMessage.BULB_WILL_BROKEN)
+            }
+            bulb.turnOn()
         } else {
-            switchable.turnOff()
+            bulb.turnOff()
         }
     }
 }

@@ -1,8 +1,6 @@
 package smartHome
 
-interface Switchable {
+interface Bulb {
     fun turnOn()
-
     fun turnOff()
-
 }

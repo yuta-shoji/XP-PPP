@@ -1,6 +1,6 @@
 package smartHome
 
-class SpyBulb : Switchable {
+class SpyBulb : Bulb {
     var turnOnWasCalled: Boolean = false
     var turnOffWasCalled: Boolean = false
 
