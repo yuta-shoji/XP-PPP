@@ -26,7 +26,9 @@ class SmartHomeTest {
         val warningService = DefaultWarningService(bulbBurnoutWarningRepository)
 
         // 電球切れ予告通知用スマホを生成する
-        val smartPhone = FakeSendNotificationRepository()
+        // 電球切れ予告通知用スマホを生成する
+        val sendNotificationRepository = FakeSendNotificationRepository()
+        val smartPhone = SendNotificationService(sendNotificationRepository)
 
         // ACTION:スイッチを入れる
         SmartHome(spyBulb, stubSwitch, warningService, smartPhone).run()
@@ -50,7 +52,9 @@ class SmartHomeTest {
         val warningService = DefaultWarningService(bulbBurnoutWarningRepository)
 
         // 電球切れ予告通知用スマホを生成する
-        val smartPhone = FakeSendNotificationRepository()
+        // 電球切れ予告通知用スマホを生成する
+        val sendNotificationRepository = FakeSendNotificationRepository()
+        val smartPhone = SendNotificationService(sendNotificationRepository)
 
         // ACTION:スイッチを入れる
         SmartHome(spyBulb, stubSwitch, warningService, smartPhone).run()
@@ -74,7 +78,9 @@ class SmartHomeTest {
         val warningService = DefaultWarningService(bulbBurnoutWarningRepository)
 
         // 電球切れ予告通知用スマホを生成する
-        val smartPhone = FakeSendNotificationRepository()
+        // 電球切れ予告通知用スマホを生成する
+        val sendNotificationRepository = FakeSendNotificationRepository()
+        val smartPhone = SendNotificationService(sendNotificationRepository)
 
         // スマートホームを初期化する
         val smartHome = SmartHome(spyBulb, stubSwitch, warningService, smartPhone)
@@ -108,7 +114,9 @@ class SmartHomeTest {
         val warningService = DefaultWarningService(bulbBurnoutWarningRepository)
 
         // 電球切れ予告通知用スマホを生成する
-        val smartPhone = FakeSendNotificationRepository()
+        // 電球切れ予告通知用スマホを生成する
+        val sendNotificationRepository = FakeSendNotificationRepository()
+        val smartPhone = SendNotificationService(sendNotificationRepository)
 
         // スマートホームを初期化する
         val smartHome = SmartHome(spyBulb, stubSwitch, warningService, smartPhone)
@@ -119,12 +127,12 @@ class SmartHomeTest {
         }
 
         // スマホ通知がないことを確認
-        assertFalse(smartPhone.wasSent)
+        assertFalse(smartPhone.didSend())
 
         smartHome.run()
 
         // スマホ通知きたことを確認
-        assertTrue(smartPhone.wasSent)
+        assertTrue(smartPhone.didSend())
     }
 
     @Test
@@ -140,19 +148,26 @@ class SmartHomeTest {
         val warningService = DefaultWarningService(bulbBurnoutWarningRepository)
 
         // 電球切れ予告通知用スマホを生成する
-        val smartPhone = FakeSendNotificationRepository()
+        val sendNotificationRepository = FakeSendNotificationRepository()
+        val smartPhone = SendNotificationService(sendNotificationRepository)
 
         // スマートホームを初期化する
         val smartHome = SmartHome(spyBulb, stubSwitch, warningService, smartPhone)
 
         // ACTION:
-        for (num in 1..9) {
+        for (num in 1..8) {
             smartHome.run()
         }
 
-        // スマホ通知きたことを確認
-        assertEquals(smartPhone.sendNotification(SendMessage.BULB_WILL_BROKEN), SendMessage.BULB_WILL_BROKEN)
+        // スマホ通知こないことを確認}
+        assertFalse(smartPhone.didSend())
 
+        // スマホ通知きたことを確認
         smartHome.run()
+        assertTrue(smartPhone.didSend())
+
+        // スマホ通知こないことを確認
+        smartHome.run()
+        assertTrue(smartPhone.didSend())
     }
 }
