@@ -20,8 +20,10 @@ class SmartHomeTest {
         val spyBulb = SpyBulb()
         //常時Onのスイッチを作る
         val alwaysOnSwitch = AlwaysOnSwitch()
+        //スマホを作る
+        val smartPhone = FakeSmartPhoneRepository()
         //スマートホームを作る
-        smartHome = SmartHome(spyBulb, alwaysOnSwitch, burnoutWarningService)
+        smartHome = SmartHome(spyBulb, alwaysOnSwitch, burnoutWarningService, smartPhone)
 
 
         //スイッチを入れる
@@ -36,7 +38,8 @@ class SmartHomeTest {
     fun `スイッチOFFの時は、バルブがオフになる`() {
         val spyBulb = SpyBulb()
         val alwaysOffSwitch = AlwaysOffSwitch()
-        smartHome = SmartHome(spyBulb, alwaysOffSwitch, burnoutWarningService)
+        val smartPhone = FakeSmartPhoneRepository()
+        smartHome = SmartHome(spyBulb, alwaysOffSwitch, burnoutWarningService, smartPhone)
 
 
         smartHome.run()
@@ -46,10 +49,11 @@ class SmartHomeTest {
     }
 
     @Test
-    fun `スイッチON⇆OFFを５回繰り返したら、スマートホームの電球切れを警告する`() {
+    fun `スイッチON⇆OFFを５回繰り返したら、スマートホームの電球切れをスマホ通知で警告する`() {
         val spyBulb = SpyBulb()
         val toggleSwitch = ToggleSwitch()
-        smartHome = SmartHome(spyBulb, toggleSwitch, burnoutWarningService)
+        val smartPhone = FakeSmartPhoneRepository()
+        smartHome = SmartHome(spyBulb, toggleSwitch, burnoutWarningService, smartPhone)
 
         for (num in 1..8) {
             smartHome.run()
@@ -59,4 +63,5 @@ class SmartHomeTest {
         smartHome.run()
         assertTrue(burnoutWarningService.isWarning())
     }
+
 }
