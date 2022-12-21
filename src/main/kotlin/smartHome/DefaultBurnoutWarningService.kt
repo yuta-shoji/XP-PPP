@@ -3,13 +3,24 @@ package smartHome
 interface BurnoutWarningService {
     fun isWarning(): Boolean
     fun incrementSwitchCount()
+    fun sendNotification(): Message
+    fun deleteNotification()
 }
 
-class DefaultBurnoutWarningService(private val burnoutWarningRepository: BurnoutWarningRepository): BurnoutWarningService {
+class DefaultBurnoutWarningService(private val smartPhoneRepository: FakeSmartPhoneRepository): BurnoutWarningService {
     override fun isWarning(): Boolean {
-        return (burnoutWarningRepository.switchOnCount >= 5)
+        return (smartPhoneRepository.switchOnCount == 5)
     }
+
     override fun incrementSwitchCount() {
-        burnoutWarningRepository.switchOnCount++
+        smartPhoneRepository.switchOnCount++
+    }
+
+    override fun sendNotification(): Message {
+        return smartPhoneRepository.sendNotification()
+    }
+
+    override fun deleteNotification() {
+        smartPhoneRepository.wasSendBulbWillBroken = false
     }
 }

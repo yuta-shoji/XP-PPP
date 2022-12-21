@@ -5,13 +5,13 @@ import org.junit.jupiter.api.Assertions.*
 
 class SmartHomeTest {
     private lateinit var smartHome: SmartHome
-    private lateinit var burnoutWarningRepository: BurnoutWarningRepository
+    private lateinit var smartPhoneRepository: FakeSmartPhoneRepository
     private lateinit var burnoutWarningService: DefaultBurnoutWarningService
 
     @BeforeEach
     fun setup() {
-        burnoutWarningRepository = BurnoutWarningRepository()
-        burnoutWarningService = DefaultBurnoutWarningService(burnoutWarningRepository)
+        smartPhoneRepository = FakeSmartPhoneRepository()
+        burnoutWarningService = DefaultBurnoutWarningService(smartPhoneRepository)
     }
 
     @Test
@@ -20,10 +20,8 @@ class SmartHomeTest {
         val spyBulb = SpyBulb()
         //常時Onのスイッチを作る
         val alwaysOnSwitch = AlwaysOnSwitch()
-        //スマホを作る
-        val smartPhone = FakeSmartPhoneRepository()
         //スマートホームを作る
-        smartHome = SmartHome(spyBulb, alwaysOnSwitch, burnoutWarningService, smartPhone)
+        smartHome = SmartHome(spyBulb, alwaysOnSwitch, burnoutWarningService)
 
 
         //スイッチを入れる
@@ -38,8 +36,7 @@ class SmartHomeTest {
     fun `スイッチOFFの時は、バルブがオフになる`() {
         val spyBulb = SpyBulb()
         val alwaysOffSwitch = AlwaysOffSwitch()
-        val smartPhone = FakeSmartPhoneRepository()
-        smartHome = SmartHome(spyBulb, alwaysOffSwitch, burnoutWarningService, smartPhone)
+        smartHome = SmartHome(spyBulb, alwaysOffSwitch, burnoutWarningService)
 
 
         smartHome.run()
@@ -52,16 +49,31 @@ class SmartHomeTest {
     fun `スイッチON⇆OFFを５回繰り返したら、スマートホームの電球切れをスマホ通知で警告する`() {
         val spyBulb = SpyBulb()
         val toggleSwitch = ToggleSwitch()
-        val smartPhone = FakeSmartPhoneRepository()
-        smartHome = SmartHome(spyBulb, toggleSwitch, burnoutWarningService, smartPhone)
+        smartHome = SmartHome(spyBulb, toggleSwitch, burnoutWarningService)
 
         for (num in 1..8) {
             smartHome.run()
         }
-        assertFalse(burnoutWarningService.isWarning())
+        assertFalse(smartPhoneRepository.wasSendBulbWillBroken)
 
         smartHome.run()
-        assertTrue(burnoutWarningService.isWarning())
+        assertTrue(smartPhoneRepository.wasSendBulbWillBroken)
+    }
+
+    @Test
+    fun `電球切れ通知は一回しか送れなないようにする`() {
+        val spyBulb = SpyBulb()
+        val toggleSwitch = ToggleSwitch()
+        smartHome = SmartHome(spyBulb, toggleSwitch, burnoutWarningService)
+
+        for (num in 1..9) {
+            smartHome.run()
+        }
+        assertTrue(smartPhoneRepository.wasSendBulbWillBroken)
+
+        smartHome.run()
+        smartHome.run()
+        assertFalse(smartPhoneRepository.wasSendBulbWillBroken)
     }
 
 }

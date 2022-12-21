@@ -2,14 +2,13 @@ package smartHome
 
 interface SendNotificationRepository {
     fun sendNotification(): Message
-    var wasSend: Boolean
 }
 
 class FakeSmartPhoneRepository: SendNotificationRepository {
+    var wasSendBulbWillBroken: Boolean = false
+    var switchOnCount: Int = 0
     override fun sendNotification(): Message {
-        wasSend = true
+        wasSendBulbWillBroken = true
         return Message.BULB_WILL_BROKEN
     }
-
-    override var wasSend: Boolean = false
 }
