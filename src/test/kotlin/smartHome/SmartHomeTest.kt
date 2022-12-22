@@ -54,10 +54,10 @@ class SmartHomeTest {
         for (num in 1..8) {
             smartHome.run()
         }
-        assertFalse(smartPhoneRepository.wasSendBulbWillBroken)
+        assertEquals(0, smartPhoneRepository.sendMessageCount)
 
         smartHome.run()
-        assertTrue(smartPhoneRepository.wasSendBulbWillBroken)
+        assertEquals(1, smartPhoneRepository.sendMessageCount)
     }
 
     @Test
@@ -69,11 +69,10 @@ class SmartHomeTest {
         for (num in 1..9) {
             smartHome.run()
         }
-        assertTrue(smartPhoneRepository.wasSendBulbWillBroken)
+        assertEquals(1, smartPhoneRepository.sendMessageCount)
 
         smartHome.run()
         smartHome.run()
-        assertFalse(smartPhoneRepository.wasSendBulbWillBroken)
+        assertEquals(1, smartPhoneRepository.sendMessageCount)
     }
-
 }

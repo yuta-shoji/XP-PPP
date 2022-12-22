@@ -5,8 +5,8 @@ interface SendNotificationRepository {
 }
 
 class FakeSmartPhoneRepository: SendNotificationRepository {
-    var wasSendBulbWillBroken: Boolean = false
     var switchOnCount: Int = 0
+    var sendMessageCount: Int = 0
     override fun sendNotification(): Message {
         return Message.BULB_WILL_BROKEN
     }

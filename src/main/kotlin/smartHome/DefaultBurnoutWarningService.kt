@@ -4,12 +4,11 @@ interface BurnoutWarningService {
     fun isWarning(): Boolean
     fun incrementSwitchCount()
     fun sendNotification(): Message
-    fun didSend(): Boolean
 }
 
-class DefaultBurnoutWarningService(private val smartPhoneRepository: FakeSmartPhoneRepository): BurnoutWarningService {
+class DefaultBurnoutWarningService(private val smartPhoneRepository: FakeSmartPhoneRepository) : BurnoutWarningService {
     override fun isWarning(): Boolean {
-        return (smartPhoneRepository.switchOnCount == 5)
+        return smartPhoneRepository.switchOnCount == 5
     }
 
     override fun incrementSwitchCount() {
@@ -17,12 +16,7 @@ class DefaultBurnoutWarningService(private val smartPhoneRepository: FakeSmartPh
     }
 
     override fun sendNotification(): Message {
-        smartPhoneRepository.wasSendBulbWillBroken = true
+        smartPhoneRepository.sendMessageCount++
         return smartPhoneRepository.sendNotification()
     }
-
-    override fun didSend(): Boolean {
-        return smartPhoneRepository.wasSendBulbWillBroken
-    }
-
 }

@@ -8,7 +8,7 @@ class SmartHome(
     fun run() {
         if (switch.isOn()) {
             warningService.incrementSwitchCount()
-            if (warningService.isWarning() && !warningService.didSend()) {
+            if (warningService.isWarning()) {
                 println(warningService.sendNotification())
             }
             bulb.turnOn()
